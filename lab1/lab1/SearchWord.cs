@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace searchSentencesWithSomeWord
+namespace lab1
 {
     class SearchWord
     {
