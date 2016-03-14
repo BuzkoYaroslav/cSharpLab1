@@ -14,6 +14,51 @@ namespace searchSentencesWithSomeWord
                     filteredSentences = new List<string>();
         public string fileName { get; private set; }
         public string filter { get; private set; }
+         public SearchWord(string fileName, string filter)
+        {
+            ChangeFilter(filter);
+            ChangeFile(fileName);
+        }
+
+        public string SetFile
+        {
+            set
+            {
+                ChangeFile(value);
+            }
+        }
+        public string SetFilter
+        {
+            set
+            {
+                ChangeFilter(value);
+            }
+        }
+
+        private void ChangeFile(string fName)
+        {
+            allSentences.Clear();
+            filteredSentences.Clear();
+            try
+            {
+                fileName = fName;
+                ReadAllSentences();
+                SearchSentences();
+            }
+            catch(FileNotFoundException)
+            {
+                Console.WriteLine("File does not exist! Input correct file name: ");
+                ChangeFile(Console.ReadLine());
+            }
+        }
+        private void ChangeFilter(string writtenFilter)
+        {
+            writtenFilter = writtenFilter.TrimEnd().TrimStart();
+            for (int i = 0; i < writtenFilter.Length; i++)
+                if (!char.IsLetter(writtenFilter[i]))
+                    throw new Exception("Input string is not a word!");
+            filter = writtenFilter.ToLower();
+        }
 
         private void ReadAllSentences()
         {
