@@ -9,12 +9,13 @@ namespace lab1
 {
     class SearchWord
     {
-        const char spliter = '.';
+        private char[] spliter = new char[] { '.' , ',', ' ', ':' , '-', '"', '(' , ')'};
         List<string> allSentences = new List<string>(),
-                    filteredSentences = new List<string>();
+                     filteredSentences = new List<string>();
         public string fileName { get; private set; }
         public string filter { get; private set; }
-         public SearchWord(string fileName, string filter)
+
+        public SearchWord(string fileName, string filter)
         {
             ChangeFilter(filter);
             ChangeFile(fileName);
@@ -68,10 +69,10 @@ namespace lab1
             while (!strRead.EndOfStream)
             {
                 buffer = strRead.ReadLine();
-                while (buffer.IndexOf(spliter) != -1)
+                while (buffer.IndexOf(spliter[0]) != -1)
                 {
-                    currentSentence += buffer.Substring(0, buffer.IndexOf(spliter) + 1);
-                    buffer = buffer.Substring(buffer.IndexOf(spliter) + 1);
+                    currentSentence += buffer.Substring(0, buffer.IndexOf(spliter[0]) + 1);
+                    buffer = buffer.Substring(buffer.IndexOf(spliter[0]) + 1);
                     buffer = buffer.TrimStart();
                     allSentences.Add(currentSentence);
                     currentSentence = null;
@@ -83,13 +84,35 @@ namespace lab1
         }
         private void SearchSentences()
         {
+            List<string> words;
             foreach (string sentece in allSentences)
             {
-                if (sentece.ToLower().Contains(filter))
+                if (filter == null)
                 {
                     filteredSentences.Add((string)sentece.Clone());
                 }
+                else if (sentece.ToLower().Contains(filter))
+                {
+                    words = SplitSentence(sentece);
+                    if (words.Contains(filter))
+                        filteredSentences.Add((string)sentece.Clone());
+                }
             }
+        }
+        private List<string> SplitSentence(string sentence)
+        {
+            List<string> words = new List<string>();
+            string word;
+
+            while (sentence.Trim(spliter) != "")
+            {
+                sentence = sentence.TrimStart(spliter);
+                word = sentence.Substring(0, sentence.IndexOfAny(spliter));
+                words.Add(word.ToLower());
+                sentence = sentence.Substring(sentence.IndexOfAny(spliter) + 1);
+            }
+
+            return words;
         }
         private void WriteSeveralSentences(List<string> sentences)
         {
